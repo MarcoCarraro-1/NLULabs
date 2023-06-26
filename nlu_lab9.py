@@ -24,8 +24,8 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import math
-from google.colab import drive
-drive.mount('/content/drive')
+#from google.colab import drive
+#drive.mount('/content/drive')
 import torch.utils.data as data
 from functools import partial
 from torch.utils.data import DataLoader
