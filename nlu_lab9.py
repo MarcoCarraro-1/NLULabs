@@ -320,13 +320,13 @@ print('Test ppl: ', final_ppl)
 """### Changing Learning Rate"""
 
 hid_size = 200
-emb_size = 200
+emb_size = 300
 
 # Don't forget to experiment with a lower training batch size
 
 # With SGD try with an higer learning rate
 lr = 0.1 # This is definitely not good for SGD
-clip = 6 # Clip the gradient
+clip = 4 # Clip the gradient
 device = 'cuda:0'
 
 vocab_len = len(lang.word2id)
