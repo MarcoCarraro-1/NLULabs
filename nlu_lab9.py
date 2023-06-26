@@ -262,6 +262,8 @@ train_loader = DataLoader(train_dataset, batch_size=64, collate_fn=partial(colla
 dev_loader = DataLoader(dev_dataset, batch_size=512, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
 test_loader = DataLoader(test_dataset, batch_size=512, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
 
+
+'''
 """### Just Replace"""
 
 # Experiment also with a smaller or bigger model by changing hid and emb sizes
@@ -315,6 +317,8 @@ for epoch in pbar:
 best_model.to(device)
 final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
 print('Test ppl: ', final_ppl)
+'''
+
 
 """### Changing Learning Rate"""
 
