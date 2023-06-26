@@ -11,9 +11,6 @@ Modify the baseline LM_RNN (the idea is to add a set of improvements and see how
 ## Install & Importing
 """
 
-pip install python-Levenshtein
-pip install gensim
-
 from gensim.models import Word2Vec
 import numpy as np
 from numpy.linalg import norm
