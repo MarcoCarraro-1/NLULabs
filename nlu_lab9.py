@@ -243,9 +243,9 @@ class LM_LSTM(nn.Module):
         top_scores = scores[indexes]
         return (indexes, top_scores)
 
-train_raw = read_file("/content/drive/MyDrive/NLU Lab/dataset/ptb.train.txt")
-dev_raw = read_file("/content/drive/MyDrive/NLU Lab/dataset/ptb.valid.txt")
-test_raw = read_file("/content/drive/MyDrive/NLU Lab/dataset/ptb.test.txt")
+train_raw = read_file("/dataset/ptb.train.txt")
+dev_raw = read_file("/dataset/ptb.valid.txt")
+test_raw = read_file("/dataset/ptb.test.txt")
 
 vocab = get_vocab(train_raw, ["<pad>", "<eos>"])
 
