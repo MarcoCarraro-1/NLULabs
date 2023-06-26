@@ -266,7 +266,7 @@ test_loader = DataLoader(test_dataset, batch_size=512, collate_fn=partial(collat
 # Experiment also with a smaller or bigger model by changing hid and emb sizes
 # A large model tends to overfit
 hid_size = 200
-emb_size = 300
+emb_size = 200
 
 # Don't forget to experiment with a lower training batch size
 
@@ -320,7 +320,7 @@ print('Test ppl: ', final_ppl)
 """### Changing Learning Rate"""
 
 hid_size = 200
-emb_size = 300
+emb_size = 200
 
 # Don't forget to experiment with a lower training batch size
 
