@@ -319,7 +319,7 @@ print('Test ppl: ', final_ppl)
 
 """### Changing Learning Rate"""
 
-hid_size = 200
+hid_size = 300
 emb_size = 300
 
 # Don't forget to experiment with a lower training batch size
