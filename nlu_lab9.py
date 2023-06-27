@@ -319,8 +319,8 @@ print('Test ppl: ', final_ppl)
 
 """### Changing Learning Rate"""
 
-hid_size = 200
-emb_size = 300
+hid_size = 250
+emb_size = 350
 
 
 # With SGD try with an higer learning rate
