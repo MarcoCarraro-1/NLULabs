@@ -255,7 +255,7 @@ train_dataset = PennTreeBank(train_raw, lang)
 dev_dataset = PennTreeBank(dev_raw, lang)
 test_dataset = PennTreeBank(test_raw, lang)
 
-train_loader = DataLoader(train_dataset, batch_size=64, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]),  shuffle=True)
+train_loader = DataLoader(train_dataset, batch_size=128, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]),  shuffle=True)
 dev_loader = DataLoader(dev_dataset, batch_size=512, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
 test_loader = DataLoader(test_dataset, batch_size=512, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
 
@@ -320,7 +320,7 @@ print('Test ppl: ', final_ppl)
 """### Changing Learning Rate"""
 
 hid_size = 200
-emb_size = 350
+emb_size = 300
 
 
 # With SGD try with an higer learning rate
@@ -337,7 +337,7 @@ optimizer = optim.SGD(model.parameters(), lr=lr)
 criterion_train = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"])
 criterion_eval = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"], reduction='sum')
 
-n_epochs = 100
+n_epochs = 120
 patience = 3
 losses_train = []
 losses_dev = []
