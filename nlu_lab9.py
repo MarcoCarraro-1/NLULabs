@@ -256,8 +256,8 @@ dev_dataset = PennTreeBank(dev_raw, lang)
 test_dataset = PennTreeBank(test_raw, lang)
 
 train_loader = DataLoader(train_dataset, batch_size=64, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]),  shuffle=True)
-dev_loader = DataLoader(dev_dataset, batch_size=1024, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
-test_loader = DataLoader(test_dataset, batch_size=1024, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
+dev_loader = DataLoader(dev_dataset, batch_size=256, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
+test_loader = DataLoader(test_dataset, batch_size=256, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
 
 
 '''
@@ -320,7 +320,7 @@ print('Test ppl: ', final_ppl)
 """### Changing Learning Rate"""
 
 hid_size = 250
-emb_size = 350
+emb_size = 400
 
 
 # With SGD try with an higer learning rate
