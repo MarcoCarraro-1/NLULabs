@@ -256,8 +256,8 @@ dev_dataset = PennTreeBank(dev_raw, lang)
 test_dataset = PennTreeBank(test_raw, lang)
 
 train_loader = DataLoader(train_dataset, batch_size=64, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]),  shuffle=True)
-dev_loader = DataLoader(dev_dataset, batch_size=1024, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
-test_loader = DataLoader(test_dataset, batch_size=1024, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
+dev_loader = DataLoader(dev_dataset, batch_size=512, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
+test_loader = DataLoader(test_dataset, batch_size=512, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
 
 
 '''
@@ -324,7 +324,7 @@ emb_size = 300
 
 
 # With SGD try with an higer learning rate
-lr = 0.1 # This is definitely not good for SGD
+lr = 0.5
 clip = 5 # Clip the gradient
 device = 'cuda:0'
 
