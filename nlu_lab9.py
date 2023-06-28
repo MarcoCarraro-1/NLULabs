@@ -373,8 +373,8 @@ print('Test ppl: ', final_ppl)
 ## Weight Tying
 
 class LM_LSTM(nn.Module):
-    def __init__(self, emb_size, hidden_size, output_size, pad_index=0, out_dropout=0.1,
-                 emb_dropout=0.3, n_layers=1, tie_weights=False):
+    def __init__(self, emb_size, hidden_size, output_size, pad_index=0, out_dropout=0.4,
+                 emb_dropout=0.1, n_layers=1, tie_weights=False):
         super(LM_LSTM, self).__init__()
         self.encoder = nn.Embedding(output_size, emb_size)
         self.decoder = nn.Linear(hidden_size, output_size)
