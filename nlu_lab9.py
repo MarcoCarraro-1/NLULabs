@@ -32,6 +32,7 @@ from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import copy
+from torch.optim import AdamW
 
 """## Functions"""
 
