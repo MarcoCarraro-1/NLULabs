@@ -429,7 +429,8 @@ model = LM_LSTM(emb_size, hid_size, vocab_len, pad_index=lang.word2id["<pad>"], 
 model.apply(init_weights)
 
 #optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.01, eps=1e-6)
-optimizer = optim.SGD(model.parameters(), lr=lr)
+#optimizer = optim.SGD(model.parameters(), lr=lr)
+optimizer = torch.optim.ASGD(model.parameters(), lr=args.lr, t0=0, lambd=0., weight_decay=1.2e-6)
 criterion_train = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"])
 criterion_eval = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"], reduction='sum')
 
