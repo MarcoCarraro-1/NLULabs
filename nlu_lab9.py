@@ -376,7 +376,8 @@ class LM_LSTM(nn.Module):
     def __init__(self, emb_size, hidden_size, output_size, pad_index=0, out_dropout=0.1,
                  emb_dropout=0.3, n_layers=1, tie_weights=False):
         super(LM_LSTM, self).__init__()
-
+        self.encoder = nn.Embedding(output_size, emb_size)
+        self.decoder = nn.Linear(hidden_size, output_size)
         if tie_weights:
             #    raise ValueError('When using the tied flag, nhid must be equal to emsize')
             self.decoder.weight = self.encoder.weight
