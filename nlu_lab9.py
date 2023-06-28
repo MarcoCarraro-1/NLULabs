@@ -422,6 +422,9 @@ lr = 0.0001
 #lr = 30
 clip = 0.25 # Clip the gradient
 device = 'cuda:0'
+decay = 1.2e-6
+mu = 0.9
+epsilon = 1e-8
 
 vocab_len = len(lang.word2id)
 
@@ -430,7 +433,7 @@ model.apply(init_weights)
 
 #optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.01, eps=1e-6)
 #optimizer = optim.SGD(model.parameters(), lr=lr)
-optimizer = torch.optim.ASGD(model.parameters(), lr=lr, t0=0.5, lambd=0.5, weight_decay=1.2e-4)
+optimizer = torch.optim.ASGD(model.parameters(), lr=lr, t0=0.5, lambd=0.5, weight_decay=decay, momentum=mu)
 criterion_train = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"])
 criterion_eval = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"], reduction='sum')
 
@@ -460,7 +463,22 @@ for epoch in pbar:
         
         if patience <= 0: # Early stopping with patience
             break # Not nice but it keeps the code clean
-        
+    
+     for group in optimizer.param_groups:
+        for p in group['params']:
+            if p.grad is None:
+                continue
+            param_state = optimizer.state[p]
+            if 'momentum_buffer' not in param_state:
+                buf = param_state['momentum_buffer'] = torch.clone(p.grad).detach()
+            else:
+                buf = param_state['momentum_buffer']
+                buf.mul_(mu).add_(p.grad, alpha=1 - mu)
+                p.grad = buf
+
+            p.add_(p.grad, alpha=-group['lr'])
+            p.add_(torch.sign(p) * epsilon)
+
 best_model.to(device)
 final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
 print('Test ppl: ', final_ppl)
