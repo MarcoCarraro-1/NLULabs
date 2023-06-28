@@ -456,10 +456,10 @@ for epoch in pbar:
             patience = 3
         else:
             patience -= 1
-
+        '''
         if patience <= 0: # Early stopping with patience
             break # Not nice but it keeps the code clean
-
+        '''
 best_model.to(device)
 final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
 print('Test ppl: ', final_ppl)
