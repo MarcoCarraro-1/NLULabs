@@ -415,7 +415,7 @@ class LM_LSTM(nn.Module):
 
 hid_size = 400
 emb_size = 400
-
+torch.cuda.empty_cache()
 
 # With SGD try with an higer learning rate
 lr = 0.0001
