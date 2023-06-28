@@ -413,8 +413,8 @@ class LM_LSTM(nn.Module):
         return (indexes, top_scores)
 
 
-hid_size = 400
-emb_size = 400
+hid_size = 300
+emb_size = 300
 torch.cuda.empty_cache()
 
 # With SGD try with an higer learning rate
@@ -430,7 +430,7 @@ model.apply(init_weights)
 
 #optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.01, eps=1e-6)
 #optimizer = optim.SGD(model.parameters(), lr=lr)
-optimizer = torch.optim.ASGD(lr=lr, t0=0, lambd=0., weight_decay=1.2e-6)
+optimizer = torch.optim.ASGD(model.params(), lr=lr, t0=0, lambd=0., weight_decay=1.2e-6)
 criterion_train = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"])
 criterion_eval = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"], reduction='sum')
 
