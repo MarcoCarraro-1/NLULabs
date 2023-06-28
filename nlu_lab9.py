@@ -423,7 +423,7 @@ device = 'cuda:0'
 
 vocab_len = len(lang.word2id)
 
-model = LM_LSTM(emb_size, hid_size, vocab_len, pad_index=lang.word2id["<pad>"]).to(device)
+model = LM_LSTM(emb_size, hid_size, vocab_len, pad_index=lang.word2id["<pad>"], tie_weights=True).to(device)
 model.apply(init_weights)
 
 optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.01, eps=1e-6)
