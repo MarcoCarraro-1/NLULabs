@@ -419,8 +419,8 @@ emb_size = 400
 
 # With SGD try with an higer learning rate
 #lr = 0.0001
-lr = 0.5
-clip = 5 # Clip the gradient
+lr = 30
+clip = 0.25 # Clip the gradient
 device = 'cuda:0'
 
 vocab_len = len(lang.word2id)
