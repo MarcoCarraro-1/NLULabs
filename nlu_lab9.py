@@ -420,7 +420,7 @@ torch.cuda.empty_cache()
 # With SGD try with an higer learning rate
 lr = 0.0001
 #lr = 30
-clip = 1 # Clip the gradient
+clip = 0.25 # Clip the gradient
 device = 'cuda:0'
 
 vocab_len = len(lang.word2id)
@@ -430,7 +430,7 @@ model.apply(init_weights)
 
 #optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.01, eps=1e-6)
 #optimizer = optim.SGD(model.parameters(), lr=lr)
-optimizer = torch.optim.ASGD(model.parameters(), lr=lr, t0=0, lambd=0., weight_decay=1.2e-6)
+optimizer = torch.optim.ASGD(model.parameters(), lr=lr, t0=0.5, lambd=0.5, weight_decay=1.2e-4)
 criterion_train = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"])
 criterion_eval = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"], reduction='sum')
 
