@@ -257,8 +257,8 @@ dev_dataset = PennTreeBank(dev_raw, lang)
 test_dataset = PennTreeBank(test_raw, lang)
 
 train_loader = DataLoader(train_dataset, batch_size=64, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]),  shuffle=True)
-dev_loader = DataLoader(dev_dataset, batch_size=128, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
-test_loader = DataLoader(test_dataset, batch_size=128, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
+dev_loader = DataLoader(dev_dataset, batch_size=256, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
+test_loader = DataLoader(test_dataset, batch_size=256, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
 
 
 '''
@@ -420,7 +420,7 @@ torch.cuda.empty_cache()
 # With SGD try with an higer learning rate
 lr = 0.0001
 #lr = 30
-clip = 0.25 # Clip the gradient
+clip = 1 # Clip the gradient
 device = 'cuda:0'
 
 vocab_len = len(lang.word2id)
