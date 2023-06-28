@@ -433,7 +433,7 @@ model.apply(init_weights)
 
 #optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.01, eps=1e-6)
 #optimizer = optim.SGD(model.parameters(), lr=lr)
-optimizer = torch.optim.ASGD(model.parameters(), lr=lr, t0=0.5, lambd=0.5, weight_decay=decay, momentum=mu)
+optimizer = torch.optim.ASGD(model.parameters(), lr=lr, t0=0.5, lambd=0.5, weight_decay=decay)
 criterion_train = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"])
 criterion_eval = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"], reduction='sum')
 
