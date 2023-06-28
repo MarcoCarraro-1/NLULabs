@@ -464,7 +464,7 @@ for epoch in pbar:
         if patience <= 0: # Early stopping with patience
             break # Not nice but it keeps the code clean
     
-     for group in optimizer.param_groups:
+    for group in optimizer.param_groups:
         for p in group['params']:
             if p.grad is None:
                 continue
