@@ -418,8 +418,8 @@ emb_size = 400
 
 
 # With SGD try with an higer learning rate
-#lr = 0.0001
-lr = 30
+lr = 0.0001
+#lr = 30
 clip = 0.25 # Clip the gradient
 device = 'cuda:0'
 
