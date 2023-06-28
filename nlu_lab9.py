@@ -418,7 +418,8 @@ emb_size = 400
 
 
 # With SGD try with an higer learning rate
-lr = 0.0001
+#lr = 0.0001
+lr = 0.5
 clip = 5 # Clip the gradient
 device = 'cuda:0'
 
@@ -427,7 +428,8 @@ vocab_len = len(lang.word2id)
 model = LM_LSTM(emb_size, hid_size, vocab_len, pad_index=lang.word2id["<pad>"], tie_weights=True).to(device)
 model.apply(init_weights)
 
-optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.01, eps=1e-6)
+#optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.01, eps=1e-6)
+optimizer = optim.SGD(model.parameters(), lr=lr)
 criterion_train = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"])
 criterion_eval = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"], reduction='sum')
 
