@@ -412,8 +412,8 @@ class LM_LSTM(nn.Module):
         return (indexes, top_scores)
 
 
-hid_size = 350
-emb_size = 350
+hid_size = 400
+emb_size = 400
 
 
 # With SGD try with an higer learning rate
