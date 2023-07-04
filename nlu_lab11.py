@@ -166,3 +166,49 @@ for train_index, test_index in tqdm(skf.split(x, y)):
 mean_accuracy = sum(accuracies) / len(accuracies)
 
 print("Mean Accuracy:", mean_accuracy)
+
+
+X_train_subj = []
+y_train_subj = []
+X_test_subj = []
+y_test_subj = []
+
+for sent, label in train_subj:
+  X_train_subj.append(' '.join(sent))
+  y_train_subj.append(label)
+
+for sent, label in test_subj:
+  X_test_subj.append(' '.join(sent))
+  y_test_subj.append(label)
+
+vectorizer = CountVectorizer()
+X_train__subj_vectorized = vectorizer.fit_transform(X_train_subj)
+
+x = X_train_subj + X_test_subj
+y = y_train_subj + y_test_subj
+
+vectorizer = CountVectorizer()
+
+clf = MLPClassifier()
+
+skf = StratifiedKFold(n_splits=10, random_state=42, shuffle=True)
+
+accuracies = []
+
+for train_index, test_index in tqdm(skf.split(x, y)):
+    x_train_fold, x_test_fold = [x[i] for i in train_index], [x[i] for i in test_index]
+    y_train_fold, y_test_fold = [y[i] for i in train_index], [y[i] for i in test_index]
+
+    train_features = vectorizer.fit_transform(x_train_fold)
+    test_features = vectorizer.transform(x_test_fold)
+
+    clf.fit(train_features, y_train_fold)
+
+    predictions = clf.predict(test_features)
+
+    accuracy = accuracy_score(y_test_fold, predictions)
+    accuracies.append(accuracy)
+
+mean_accuracy = sum(accuracies) / len(accuracies)
+
+print("Mean Accuracy:", mean_accuracy)
