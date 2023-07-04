@@ -69,6 +69,7 @@ obj_docs = [(sent, 'obj') for sent in subjectivity.sents(categories='obj')[:n_in
 
 len(subj_docs), len(obj_docs)
 print(subj_docs[0])
+'''
 
 """## Preprocessing Data"""
 
@@ -80,7 +81,7 @@ def preprocess_text(text):
     lemmatizer = WordNetLemmatizer()
     tokens = [lemmatizer.lemmatize(token) for token in tokens]  # Lemmatizzazione
     return tokens
-
+'''
 subj_prep = []
 obj_prep = []
 all_prep = []
