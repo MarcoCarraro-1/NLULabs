@@ -25,6 +25,7 @@ Use a K-fold evaluation for both tasks where with K = 10
 
 import nltk
 nltk.download("subjectivity")
+nltk.download("polarity")
 from nltk.corpus import movie_reviews
 from nltk.corpus import subjectivity
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -55,7 +56,9 @@ from sklearn.preprocessing import LabelEncoder
 from torch.utils.data import TensorDataset, DataLoader
 import torch.optim as optim
 from tqdm import tqdm
-
+from nltk.corpus import movie_reviews
+nltk.download('movie_reviews')
+nltk.download('vader_lexicon')
 '''
 """## Load Data"""
 
