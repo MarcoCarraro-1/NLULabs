@@ -55,7 +55,7 @@ from sklearn.preprocessing import LabelEncoder
 from torch.utils.data import TensorDataset, DataLoader
 import torch.optim as optim
 from tqdm import tqdm
-
+ '''
 """## Load Data"""
 
 n_instances = 10000
@@ -212,3 +212,121 @@ for train_index, test_index in tqdm(skf.split(x, y)):
 mean_accuracy = sum(accuracies) / len(accuracies)
 
 print("Mean Accuracy:", mean_accuracy)
+'''
+
+movie_sentences = movie_reviews.sents()
+polarity_all = []
+sid = SentimentIntensityAnalyzer()
+
+for sentence in tqdm(movie_sentences):
+  sentence_str = ' '.join(sentence)
+  ss = sid.polarity_scores(sentence_str)
+  polarity_all.append(ss)
+  #print(sentence_str, ss)
+  #print()
+
+print(type(movie_sentences))
+print(type(polarity_all))
+
+##[POLARITY] Preprocessing Data
+
+movie_prep = []
+
+for sent in tqdm(movie_sentences):
+    preprocessed_sentence = preprocess_text(' '.join(sent))
+    movie_prep.append(preprocessed_sentence)
+
+print(len(movie_prep))
+print(movie_prep[0])
+
+##[POLARITY] Split Data
+
+movie_train, movie_test = train_test_split(movie_prep, test_size=0.2, random_state=42)
+
+print(len(movie_train), len(movie_test))
+
+polarity_train = []
+polarity_test = []
+
+for sentence in tqdm(movie_train):
+  sentence_str = ' '.join(sentence)
+  ss = sid.polarity_scores(sentence_str)
+  if(ss['compound'] == 0):
+    pol = 'Neu'
+  elif(ss['compound'] > 0):
+    pol = 'Pos'
+  else:
+    pol = 'Neg'
+  polarity_train.append(pol)
+
+for sentence in tqdm(movie_test):
+  sentence_str = ' '.join(sentence)
+  ss = sid.polarity_scores(sentence_str)
+  if(ss['compound'] == 0):
+    pol = 'Neu'
+  elif(ss['compound'] > 0):
+    pol = 'Pos'
+  else:
+    pol = 'Neg'
+  polarity_test.append(pol)
+
+print()
+print("TRAINING VALUES:")
+print(len(polarity_train))
+values = pd.Series(polarity_train).value_counts()
+print(values)
+print()
+print("TEST VALUES:")
+print(len(polarity_test))
+values = pd.Series(polarity_test).value_counts()
+print(values)
+
+X_train = []
+y_train = []
+X_test = []
+y_test = []
+
+for sent, polarity in zip(movie_train, polarity_train):
+  X_train.append(' '.join(sent))
+  y_train.append(polarity)
+
+for sent, polarity in zip(movie_test, polarity_test):
+  X_test.append(' '.join(sent))
+  y_test.append(polarity)
+
+print(len(X_train), len(X_test))
+print(len(y_test))
+
+vectorizer = CountVectorizer()
+X_train_vectorized = vectorizer.fit_transform(X_train)
+
+## [POLARITY] MLP Model
+
+x = X_train + X_test
+y = y_train + y_test
+
+vectorizer = CountVectorizer()
+
+clf = MLPClassifier(hidden_layer_sizes=(100, 50), activation='relu', solver='adam')
+
+skf = StratifiedKFold(n_splits=10, random_state=42, shuffle=True)
+
+accuracies = []
+
+for train_index, test_index in tqdm(skf.split(x, y)):
+    x_train_fold, x_test_fold = [x[i] for i in train_index], [x[i] for i in test_index]
+    y_train_fold, y_test_fold = [y[i] for i in train_index], [y[i] for i in test_index]
+
+    train_features = vectorizer.fit_transform(x_train_fold)
+    test_features = vectorizer.transform(x_test_fold)
+
+    clf.fit(train_features, y_train_fold)
+
+    predictions = clf.predict(test_features)
+
+    accuracy = accuracy_score(y_test_fold, predictions)
+    accuracies.append(accuracy)
+
+mean_accuracy = sum(accuracies) / len(accuracies)
+
+print("[POLARITY] Mean Accuracy - All sentences: ", mean_accuracy)
