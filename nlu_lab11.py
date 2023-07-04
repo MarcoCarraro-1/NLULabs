@@ -151,7 +151,10 @@ X_train_attention_mask = X_train_encoded['attention_mask']
 model.to(device)
 X_train_input_ids = X_train_input_ids.to(device)
 X_train_attention_mask = X_train_attention_mask.to(device)
-y_train = y_train.to(device)
+y_train_tensor = torch.tensor(y_train)
+
+# Sposta il tensore y_train_tensor sulla GPU
+y_train_tensor = y_train_tensor.to(device)
 
 # Addestramento del modello BERT
 model.train()
