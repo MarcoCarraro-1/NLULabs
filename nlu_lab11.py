@@ -125,7 +125,7 @@ for sent, label in test_all:
 vectorizer = CountVectorizer()
 X_train_vectorized = vectorizer.fit_transform(X_train)
 
-"""## MLP Model"""
+"""## Subjectivity - MLP Model"""
 
 model = MLPClassifier(hidden_layer_sizes=(100, 50), activation='relu', solver='adam')
 model.fit(X_train_vectorized, y_train)
@@ -136,53 +136,33 @@ predictions = model.predict(X_test_vectorized)
 accuracy = accuracy_score(y_test, predictions)
 print("Accuracy:", accuracy)
 
-"""## BERT Model"""
+"""## Polarity - MLP Model"""
 
-device = torch.device("cuda")
-torch.cuda.empty_cache()
+x = X_train + X_test
+y = y_train + y_test
 
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-model = BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=2)
+vectorizer = CountVectorizer()
 
-# Tokenizzazione e codifica dei dati di addestramento
-X_train_encoded = tokenizer.batch_encode_plus(X_train, padding=True, truncation=True, max_length=32, return_tensors='pt')
-X_train_input_ids = X_train_encoded['input_ids']
-X_train_attention_mask = X_train_encoded['attention_mask']
+clf = MLPClassifier()
 
-model.to(device)
-X_train_input_ids = X_train_input_ids.to(device)
-X_train_attention_mask = X_train_attention_mask.to(device)
-label_encoder = LabelEncoder()
-y_train_encoded = label_encoder.fit_transform(y_train)
-y_train_tensor = torch.tensor(y_train_encoded)
-y_train_tensor = y_train_tensor.to(device)
+skf = StratifiedKFold(n_splits=10, random_state=42, shuffle=True)
 
-# Addestramento del modello BERT
-model.train()
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-5)
-num_epochs = 5
+accuracies = []
 
-for epoch in tqdm(range(num_epochs)):
-    outputs = model(input_ids=X_train_input_ids, attention_mask=X_train_attention_mask, labels=y_train)
-    loss = outputs.loss
-    logits = outputs.logits
+for train_index, test_index in tqdm(skf.split(x, y)):
+    x_train_fold, x_test_fold = [x[i] for i in train_index], [x[i] for i in test_index]
+    y_train_fold, y_test_fold = [y[i] for i in train_index], [y[i] for i in test_index]
 
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
+    train_features = vectorizer.fit_transform(x_train_fold)
+    test_features = vectorizer.transform(x_test_fold)
 
-# Tokenizzazione e codifica dei dati di test
-X_test_encoded = tokenizer.batch_encode_plus(X_test, padding=True, truncation=True, max_length=32, return_tensors='pt')
-X_test_input_ids = X_test_encoded['input_ids']
-X_test_attention_mask = X_test_encoded['attention_mask']
+    clf.fit(train_features, y_train_fold)
 
-# Valutazione del modello BERT
-model.eval()
-with torch.no_grad():
-    outputs = model(input_ids=X_test_input_ids, attention_mask=X_test_attention_mask)
-    logits = outputs.logits
-    predictions = torch.argmax(logits, dim=1)
+    predictions = clf.predict(test_features)
 
-# Calcolo dell'accuracy
-accuracy = accuracy_score(y_test, predictions)
-print("Accuracy:", accuracy)
+    accuracy = accuracy_score(y_test_fold, predictions)
+    accuracies.append(accuracy)
+
+mean_accuracy = sum(accuracies) / len(accuracies)
+
+print("Mean Accuracy:", mean_accuracy)
