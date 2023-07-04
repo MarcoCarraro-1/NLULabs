@@ -144,7 +144,7 @@ tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 model = BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=2)
 
 # Tokenizzazione e codifica dei dati di addestramento
-X_train_encoded = tokenizer.batch_encode_plus(X_train, padding=True, truncation=True, max_length=128, return_tensors='pt')
+X_train_encoded = tokenizer.batch_encode_plus(X_train, padding=True, truncation=True, max_length=32, return_tensors='pt')
 X_train_input_ids = X_train_encoded['input_ids']
 X_train_attention_mask = X_train_encoded['attention_mask']
 
@@ -171,7 +171,7 @@ for epoch in tqdm(range(num_epochs)):
     optimizer.step()
 
 # Tokenizzazione e codifica dei dati di test
-X_test_encoded = tokenizer.batch_encode_plus(X_test, padding=True, truncation=True, max_length=128, return_tensors='pt')
+X_test_encoded = tokenizer.batch_encode_plus(X_test, padding=True, truncation=True, max_length=32, return_tensors='pt')
 X_test_input_ids = X_test_encoded['input_ids']
 X_test_attention_mask = X_test_encoded['attention_mask']
 
