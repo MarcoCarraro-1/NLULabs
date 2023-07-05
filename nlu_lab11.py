@@ -318,7 +318,7 @@ skf = StratifiedKFold(n_splits=10, random_state=42, shuffle=True)
 
 accuracies = []
 
-for train_index, test_index in tqdm(skf.split(x, y)):
+for train_index, test_index in tqdm(skf.split(x, y), total=skf.get_n_splits()):
     x_train_fold, x_test_fold = [x[i] for i in train_index], [x[i] for i in test_index]
     y_train_fold, y_test_fold = [y[i] for i in train_index], [y[i] for i in test_index]
 
