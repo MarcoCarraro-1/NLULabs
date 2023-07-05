@@ -314,7 +314,7 @@ vectorizer = CountVectorizer()
 
 clf = MLPClassifier(hidden_layer_sizes=(100, 50), activation='relu', solver='adam')
 
-skf = StratifiedKFold(n_splits=10, random_state=42, shuffle=True)
+skf = StratifiedKFold(n_splits=5, random_state=42, shuffle=True)
 
 accuracies = []
 
