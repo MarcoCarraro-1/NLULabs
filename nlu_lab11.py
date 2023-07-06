@@ -148,7 +148,7 @@ vectorizer = CountVectorizer()
 
 clf = MLPClassifier()
 
-skf = StratifiedKFold(n_splits=5, random_state=42, shuffle=True)
+skf = StratifiedKFold(n_splits=10, random_state=42, shuffle=True)
 
 accuracies = []
 
@@ -258,7 +258,7 @@ vectorizer = CountVectorizer()
 
 model_polarity = MLPClassifier(hidden_layer_sizes=(100, 50), activation='relu', solver='adam')
 
-skf_polarity = StratifiedKFold(n_splits=5, random_state=42, shuffle=True)
+skf_polarity = StratifiedKFold(n_splits=10, random_state=42, shuffle=True)
 
 accuracies_polarity = []
 
