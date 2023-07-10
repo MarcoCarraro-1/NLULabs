@@ -317,7 +317,7 @@ final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
 print("Replace RNN with LSTM: ")
 print()
 print('Test ppl: ', final_ppl)
-
+'''Test ppl:  8927.317317345098'''
 
 
 """### Changing Learning Rate"""
