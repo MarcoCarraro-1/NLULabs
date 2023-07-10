@@ -642,7 +642,7 @@ print('Test ppl: ', final_ppl)
 '''Test ppl:  178.24676073494174'''
 
 ## Variational dropout
-
+"""
 class LM_LSTM(nn.Module):
     def __init__(self, emb_size, hidden_size, output_size, pad_index=0, out_dropout=0.1,
                  emb_dropout=0.3, n_layers=1, tie_weights=False):
@@ -735,6 +735,8 @@ final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
 print("Variational dropout: ")
 print()
 print('Test ppl: ', final_ppl)
+'''Test ppl:  176.82281834176788'''
+"""
 
 
 ## Non monotonically Triggered AvSGD
@@ -793,7 +795,7 @@ vocab_len = len(lang.word2id)
 model = LM_LSTM(emb_size, hid_size, vocab_len, pad_index=lang.word2id["<pad>"], tie_weights=True).to(device)
 model.apply(init_weights)
 
-optimizer = torch.optim.ASGD(model.parameters(), lr=args.lr, t0=0, lambd=0., weight_decay=1.2e-6)
+optimizer = torch.optim.ASGD(model.parameters(), lr=lr, t0=0, lambd=0., weight_decay=1.2e-6)
 criterion_train = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"])
 criterion_eval = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"], reduction='sum')
 
@@ -823,6 +825,22 @@ for epoch in pbar:
 
         if patience <= 0: # Early stopping with patience
             break # Not nice but it keeps the code clean
+
+
+    for group in optimizer.param_groups:
+        for p in group['params']:
+            if p.grad is None:
+                continue
+            param_state = optimizer.state[p]
+            if 'momentum_buffer' not in param_state:
+                buf = param_state['momentum_buffer'] = torch.clone(p.grad).detach()
+            else:
+                buf = param_state['momentum_buffer']
+                buf.mul_(mu).add_(p.grad, alpha=1 - mu)
+                p.grad = buf
+
+            p.add_(p.grad, alpha=-group['lr'])
+            p.add_(torch.sign(p) * epsilon)
 
 best_model.to(device)
 final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
