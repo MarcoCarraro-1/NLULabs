@@ -261,7 +261,7 @@ dev_loader = DataLoader(dev_dataset, batch_size=256, collate_fn=partial(collate_
 test_loader = DataLoader(test_dataset, batch_size=256, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
 
 
-'''
+
 """### Just Replace"""
 
 # Experiment also with a smaller or bigger model by changing hid and emb sizes
@@ -372,8 +372,8 @@ final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
 print("Changing Learning Rate: ")
 print()
 print('Test ppl: ', final_ppl)
-'''
 
+"""
 ## Add dropout layers
 
 class LM_LSTM(nn.Module):
@@ -459,7 +459,7 @@ final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
 print("Adding dropout layers: ")
 print()
 print('Test ppl: ', final_ppl)
-
+'''Test ppl:  234.78091642129814'''
 
 ## Substitute SGD with AdamW
 
@@ -513,7 +513,8 @@ final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
 print("Replace SGD with AdamW: ")
 print()
 print('Test ppl: ', final_ppl)
-
+'''Test ppl:  187.16777831184564'''
+"""
 
 ## Weight Tying
 
@@ -608,7 +609,8 @@ for epoch in pbar:
         
         if patience <= 0: # Early stopping with patience
             break # Not nice but it keeps the code clean
-    
+
+    '''
     for group in optimizer.param_groups:
         for p in group['params']:
             if p.grad is None:
@@ -623,6 +625,7 @@ for epoch in pbar:
 
             p.add_(p.grad, alpha=-group['lr'])
             p.add_(torch.sign(p) * epsilon)
+    '''
 
 best_model.to(device)
 final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
