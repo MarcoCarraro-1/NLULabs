@@ -58,9 +58,8 @@ def load_data(path):
 
 def read_file(path, eos_token="<eos>"):
     output = []
-    with open(path, "r") as f:
-        for line in f.readlines():
-            output.append(line + eos_token)
+    with open(path) as f:
+        output = json.loads(f.read())
     return output
 
 class Lang():
