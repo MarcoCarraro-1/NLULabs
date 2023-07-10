@@ -826,7 +826,7 @@ for epoch in pbar:
         if patience <= 0: # Early stopping with patience
             break # Not nice but it keeps the code clean
 
-
+    """
     for group in optimizer.param_groups:
         for p in group['params']:
             if p.grad is None:
@@ -841,6 +841,7 @@ for epoch in pbar:
 
             p.add_(p.grad, alpha=-group['lr'])
             p.add_(torch.sign(p) * epsilon)
+    """
 
 best_model.to(device)
 final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
