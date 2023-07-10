@@ -263,7 +263,7 @@ test_loader = DataLoader(test_dataset, batch_size=256, collate_fn=partial(collat
 
 
 """### Just Replace"""
-
+"""
 # Experiment also with a smaller or bigger model by changing hid and emb sizes
 # A large model tends to overfit
 hid_size = 200
@@ -318,10 +318,10 @@ print("Replace RNN with LSTM: ")
 print()
 print('Test ppl: ', final_ppl)
 '''Test ppl:  8927.317317345098'''
-
+"""
 
 """### Changing Learning Rate"""
-
+"""
 hid_size = 250
 emb_size = 400
 
@@ -372,10 +372,11 @@ final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
 print("Changing Learning Rate: ")
 print()
 print('Test ppl: ', final_ppl)
-
+'''Test ppl:  239.16614436083387'''
 """
-## Add dropout layers
 
+## Add dropout layers
+"""
 class LM_LSTM(nn.Module):
     def __init__(self, emb_size, hidden_size, output_size, pad_index=0, out_dropout=0.1,
                  emb_dropout=0.3, n_layers=1):
@@ -460,9 +461,9 @@ print("Adding dropout layers: ")
 print()
 print('Test ppl: ', final_ppl)
 '''Test ppl:  234.78091642129814'''
-
+"""
 ## Substitute SGD with AdamW
-
+"""
 hid_size = 250
 emb_size = 400
 
@@ -577,9 +578,9 @@ vocab_len = len(lang.word2id)
 model = LM_LSTM(emb_size, hid_size, vocab_len, pad_index=lang.word2id["<pad>"], tie_weights=True).to(device)
 model.apply(init_weights)
 
-#optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.01, eps=1e-6)
+optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.01, eps=1e-6)
 #optimizer = optim.SGD(model.parameters(), lr=lr)
-optimizer = torch.optim.ASGD(model.parameters(), lr=lr, t0=0.5, lambd=0.5, weight_decay=decay)
+#optimizer = torch.optim.ASGD(model.parameters(), lr=lr, t0=0.5, lambd=0.5, weight_decay=decay)
 criterion_train = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"])
 criterion_eval = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"], reduction='sum')
 
