@@ -26,8 +26,6 @@ from collections import Counter
 import os
 import json
 from pprint import pprint
-from google.colab import drive
-drive.mount('/content/drive')
 import random
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -57,6 +55,13 @@ def load_data(path):
     with open(path) as f:
         dataset = json.loads(f.read())
     return dataset
+
+def read_file(path, eos_token="<eos>"):
+    output = []
+    with open(path, "r") as f:
+        for line in f.readlines():
+            output.append(line + eos_token)
+    return output
 
 class Lang():
     def __init__(self, words, intents, slots, cutoff=0):
@@ -323,8 +328,8 @@ device = 'cuda:0' # cuda:0 means we are using the GPU with id 0, if you have mul
 os.environ['CUDA_LAUNCH_BLOCKING'] = "1" # Used to report errors on CUDA side
 PAD_TOKEN = 0
 
-tmp_train_raw = load_data("/content/drive/MyDrive/NLU Lab/dataset/ATIS/train.json")
-test_raw = load_data("/content/drive/MyDrive/NLU Lab/dataset/ATIS/test.json")
+tmp_train_raw = read_file("dataset/ATIS/train.json")
+test_raw = read_file("dataset/ATIS/test.json")
 print('Train samples:', len(tmp_train_raw))
 print('Test samples:', len(test_raw))
 
