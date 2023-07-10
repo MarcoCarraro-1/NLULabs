@@ -564,6 +564,7 @@ train_loader = DataLoader(train_dataset, batch_size=64, collate_fn=partial(colla
 dev_loader = DataLoader(dev_dataset, batch_size=64, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
 test_loader = DataLoader(test_dataset, batch_size=64, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
 
+"""
 hid_size = 250
 emb_size = 400
 torch.cuda.empty_cache()
@@ -637,6 +638,7 @@ final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
 print("Weight Tying: ")
 print()
 print('Test ppl: ', final_ppl)
+"""
 '''Test ppl:  178.24676073494174'''
 
 ## Variational dropout
@@ -682,8 +684,9 @@ class LM_LSTM(nn.Module):
         return (indexes, top_scores)
 
 
-hid_size = 400
+hid_size = 250
 emb_size = 400
+torch.cuda.empty_cache()
 
 
 # With SGD try with an higer learning rate
@@ -776,7 +779,7 @@ class LM_LSTM(nn.Module):
         top_scores = scores[indexes]
         return (indexes, top_scores)
 
-hid_size = 400
+hid_size = 250
 emb_size = 400
 
 
