@@ -14,11 +14,11 @@ Original file is located at
 
 import nltk
 nltk.download('averaged_perceptron_tagger')
+from nltk.corpus import senseval
 nltk.download('senseval')
 nltk.download('punkt')
 nltk.download('wordnet')
 nltk.download('universal_tagset')
-from nltk.corpus import senseval
 inst = senseval.instances('interest.pos')[0]
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.model_selection import cross_validate
