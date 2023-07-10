@@ -632,6 +632,8 @@ slot_f1s = np.asarray(slot_f1s)
 intent_acc = np.asarray(intent_acc)
 print('Slot F1', round(slot_f1s.mean(),3), '+-', round(slot_f1s.std(),3))
 print('Intent Acc', round(intent_acc.mean(), 3), '+-', round(slot_f1s.std(), 3))
+'''Slot F1 0.937 +- 0.004
+Intent Acc 0.949 +- 0.004'''
 
 """#Lab Exercise 2
 In the IAS, replace the LSMT with a BERT model.
