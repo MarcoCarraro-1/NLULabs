@@ -848,3 +848,4 @@ final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
 print("Non monotonically Triggered AvSGD: ")
 print()
 print('Test ppl: ', final_ppl)
+'''Test ppl:  204.66631850765194'''
