@@ -7,7 +7,7 @@ Original file is located at
     https://colab.research.google.com/drive/1oz-cUnnn0ehBF8PIX-bh_gJxya-OAey-
 
 
-"""# Lab Exercise
+# Lab Exercise
 
 ## Import & Installing
 """
@@ -37,7 +37,7 @@ from collections import Counter
 from tqdm import tqdm
 
 """## Extend Collocational Features with POS-Tags"""
-
+from nltk.corpus import senseval
 def collocational_features(inst):
     p = inst.position
     return {
