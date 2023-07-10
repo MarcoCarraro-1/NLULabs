@@ -767,7 +767,7 @@ class LM_LSTM(nn.Module):
         top_scores = scores[indexes]
         return (indexes, top_scores)
 
- hid_size = 400
+hid_size = 400
 emb_size = 400
 
 
