@@ -560,8 +560,8 @@ class LM_LSTM(nn.Module):
         return (indexes, top_scores)
 
 
-hid_size = 300
-emb_size = 300
+hid_size = 250
+emb_size = 400
 torch.cuda.empty_cache()
 
 # With SGD try with an higer learning rate
