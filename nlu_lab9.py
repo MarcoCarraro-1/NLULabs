@@ -314,6 +314,8 @@ for epoch in pbar:
 
 best_model.to(device)
 final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
+print("Replace RNN with LSTM: ")
+print()
 print('Test ppl: ', final_ppl)
 
 
@@ -367,8 +369,151 @@ for epoch in pbar:
 
 best_model.to(device)
 final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
+print("Changing Learning Rate: ")
+print()
 print('Test ppl: ', final_ppl)
 '''
+
+## Add dropout layers
+
+class LM_LSTM(nn.Module):
+    def __init__(self, emb_size, hidden_size, output_size, pad_index=0, out_dropout=0.1,
+                 emb_dropout=0.3, n_layers=1):
+        super(LM_LSTM, self).__init__()
+        self.embedding = nn.Embedding(output_size, emb_size, padding_idx=pad_index)
+        self.dropout_emb = nn.Dropout(emb_dropout)
+        self.lstm = nn.LSTM(emb_size, hidden_size, n_layers, bidirectional=False)
+        self.dropout_out = nn.Dropout(out_dropout)
+        self.pad_token = pad_index
+        self.output = nn.Linear(hidden_size, output_size)
+
+    def forward(self, input_sequence):
+        emb = self.embedding(input_sequence)
+        emb = self.dropout_emb(emb)
+        lstm_out, _  = self.lstm(emb)
+        lstm_out = self.dropout_out(lstm_out)
+        output = self.output(lstm_out).permute(0,2,1)
+        return output
+    def get_word_embedding(self, token):
+        return self.embedding(token).squeeze(0).detach().cpu().numpy()
+
+    def get_most_similar(self, vector, top_k=10):
+        embs = self.embedding.weight.detach().cpu().numpy()
+        scores = []
+        for i, x in enumerate(embs):
+            if i != self.pad_token:
+                scores.append(cosine_similarity(x, vector))
+        # Take ids of the most similar tokens
+        scores = np.asarray(scores)
+        indexes = np.argsort(scores)[::-1][:top_k]
+        top_scores = scores[indexes]
+        return (indexes, top_scores)
+
+hid_size = 250
+emb_size = 400
+
+
+# With SGD try with an higer learning rate
+lr = 1
+clip = 5 # Clip the gradient
+device = 'cuda:0'
+
+vocab_len = len(lang.word2id)
+
+model = LM_LSTM(emb_size, hid_size, vocab_len, pad_index=lang.word2id["<pad>"]).to(device)
+model.apply(init_weights)
+
+optimizer = optim.SGD(model.parameters(), lr=lr)
+criterion_train = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"])
+criterion_eval = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"], reduction='sum')
+
+n_epochs = 100
+patience = 3
+losses_train = []
+losses_dev = []
+sampled_epochs = []
+best_ppl = math.inf
+best_model = None
+pbar = tqdm(range(1,n_epochs))
+for epoch in pbar:
+    loss = train_loop(train_loader, optimizer, criterion_train, model, clip)
+
+    if epoch % 1 == 0:
+        sampled_epochs.append(epoch)
+        losses_train.append(np.asarray(loss).mean())
+        ppl_dev, loss_dev = eval_loop(dev_loader, criterion_eval, model)
+        losses_dev.append(np.asarray(loss_dev).mean())
+        pbar.set_description("PPL: %f" % ppl_dev)
+        if  ppl_dev < best_ppl: # the lower, the better
+            best_ppl = ppl_dev
+            best_model = copy.deepcopy(model).to('cpu')
+            patience = 3
+        else:
+            patience -= 1
+
+        if patience <= 0: # Early stopping with patience
+            break # Not nice but it keeps the code clean
+
+best_model.to(device)
+final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
+print("Adding dropout layers: ")
+print()
+print('Test ppl: ', final_ppl)
+
+
+## Substitute SGD with AdamW
+
+hid_size = 250
+emb_size = 400
+
+
+# With SGD try with an higer learning rate
+lr = 0.0001
+clip = 5 # Clip the gradient
+device = 'cuda:0'
+
+vocab_len = len(lang.word2id)
+
+model = LM_LSTM(emb_size, hid_size, vocab_len, pad_index=lang.word2id["<pad>"]).to(device)
+model.apply(init_weights)
+
+optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.01, eps=1e-6)
+criterion_train = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"])
+criterion_eval = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"], reduction='sum')
+
+n_epochs = 100
+patience = 3
+losses_train = []
+losses_dev = []
+sampled_epochs = []
+best_ppl = math.inf
+best_model = None
+pbar = tqdm(range(1,n_epochs))
+for epoch in pbar:
+    loss = train_loop(train_loader, optimizer, criterion_train, model, clip)
+
+    if epoch % 1 == 0:
+        sampled_epochs.append(epoch)
+        losses_train.append(np.asarray(loss).mean())
+        ppl_dev, loss_dev = eval_loop(dev_loader, criterion_eval, model)
+        losses_dev.append(np.asarray(loss_dev).mean())
+        pbar.set_description("PPL: %f" % ppl_dev)
+        if  ppl_dev < best_ppl: # the lower, the better
+            best_ppl = ppl_dev
+            best_model = copy.deepcopy(model).to('cpu')
+            patience = 3
+        else:
+            patience -= 1
+
+        if patience <= 0: # Early stopping with patience
+            break # Not nice but it keeps the code clean
+
+best_model.to(device)
+final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
+print("Replace SGD with AdamW: ")
+print()
+print('Test ppl: ', final_ppl)
+
 
 ## Weight Tying
 
@@ -481,4 +626,194 @@ for epoch in pbar:
 
 best_model.to(device)
 final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
+print("Weight Tying: ")
+print()
+print('Test ppl: ', final_ppl)
+
+## Variational dropout
+
+class LM_LSTM(nn.Module):
+    def __init__(self, emb_size, hidden_size, output_size, pad_index=0, out_dropout=0.1,
+                 emb_dropout=0.3, n_layers=1, tie_weights=False):
+        super(LM_LSTM, self).__init__()
+        self.encoder = nn.Embedding(output_size, emb_size)
+        self.decoder = nn.Linear(hidden_size, output_size)
+        if tie_weights:
+            #    raise ValueError('When using the tied flag, nhid must be equal to emsize')
+            self.decoder.weight = self.encoder.weight
+
+        self.embedding = nn.Embedding(output_size, emb_size, padding_idx=pad_index)
+        #self.dropout_emb = nn.Dropout(emb_dropout)
+        self.lstm = nn.LSTM(emb_size, hidden_size, n_layers, bidirectional=False)
+        #self.dropout_out = nn.Dropout(out_dropout)
+        self.pad_token = pad_index
+        self.output = nn.Linear(hidden_size, output_size)
+        self.tie_weights = tie_weights
+
+    def forward(self, input_sequence):
+        emb = self.embedding(input_sequence)
+        #emb = self.dropout_emb(emb)
+        lstm_out, _  = self.lstm(emb)
+        #lstm_out = self.dropout_out(lstm_out)
+        output = self.output(lstm_out).permute(0,2,1)
+        return output
+    def get_word_embedding(self, token):
+        return self.embedding(token).squeeze(0).detach().cpu().numpy()
+
+    def get_most_similar(self, vector, top_k=10):
+        embs = self.embedding.weight.detach().cpu().numpy()
+        scores = []
+        for i, x in enumerate(embs):
+            if i != self.pad_token:
+                scores.append(cosine_similarity(x, vector))
+        # Take ids of the most similar tokens
+        scores = np.asarray(scores)
+        indexes = np.argsort(scores)[::-1][:top_k]
+        top_scores = scores[indexes]
+        return (indexes, top_scores)
+
+
+hid_size = 400
+emb_size = 400
+
+
+# With SGD try with an higer learning rate
+lr = 0.0001
+clip = 5 # Clip the gradient
+device = 'cuda:0'
+
+vocab_len = len(lang.word2id)
+
+model = LM_LSTM(emb_size, hid_size, vocab_len, pad_index=lang.word2id["<pad>"], tie_weights=True).to(device)
+model.apply(init_weights)
+
+optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.01, eps=1e-6)
+criterion_train = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"])
+criterion_eval = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"], reduction='sum')
+
+n_epochs = 100
+patience = 3
+losses_train = []
+losses_dev = []
+sampled_epochs = []
+best_ppl = math.inf
+best_model = None
+pbar = tqdm(range(1,n_epochs))
+for epoch in pbar:
+    loss = train_loop(train_loader, optimizer, criterion_train, model, clip)
+
+    if epoch % 1 == 0:
+        sampled_epochs.append(epoch)
+        losses_train.append(np.asarray(loss).mean())
+        ppl_dev, loss_dev = eval_loop(dev_loader, criterion_eval, model)
+        losses_dev.append(np.asarray(loss_dev).mean())
+        pbar.set_description("PPL: %f" % ppl_dev)
+        if  ppl_dev < best_ppl: # the lower, the better
+            best_ppl = ppl_dev
+            best_model = copy.deepcopy(model).to('cpu')
+            patience = 3
+        else:
+            patience -= 1
+
+        if patience <= 0: # Early stopping with patience
+            break # Not nice but it keeps the code clean
+
+best_model.to(device)
+final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
+print("Variational dropout: ")
+print()
+print('Test ppl: ', final_ppl)
+
+
+## Non monotonically Triggered AvSGD
+
+class LM_LSTM(nn.Module):
+    def __init__(self, emb_size, hidden_size, output_size, pad_index=0, out_dropout=0.1,
+                 emb_dropout=0.3, n_layers=1, tie_weights=False):
+        super(LM_LSTM, self).__init__()
+        self.encoder = nn.Embedding(output_size, emb_size)
+        self.decoder = nn.Linear(hidden_size, output_size)
+        if tie_weights:
+            #    raise ValueError('When using the tied flag, nhid must be equal to emsize')
+            self.decoder.weight = self.encoder.weight
+
+        self.embedding = nn.Embedding(output_size, emb_size, padding_idx=pad_index)
+        #self.dropout_emb = nn.Dropout(emb_dropout)
+        self.lstm = nn.LSTM(emb_size, hidden_size, n_layers, bidirectional=False)
+        #self.dropout_out = nn.Dropout(out_dropout)
+        self.pad_token = pad_index
+        self.output = nn.Linear(hidden_size, output_size)
+        self.tie_weights = tie_weights
+
+    def forward(self, input_sequence):
+        emb = self.embedding(input_sequence)
+        #emb = self.dropout_emb(emb)
+        lstm_out, _  = self.lstm(emb)
+        #lstm_out = self.dropout_out(lstm_out)
+        output = self.output(lstm_out).permute(0,2,1)
+        return output
+    def get_word_embedding(self, token):
+        return self.embedding(token).squeeze(0).detach().cpu().numpy()
+
+    def get_most_similar(self, vector, top_k=10):
+        embs = self.embedding.weight.detach().cpu().numpy()
+        scores = []
+        for i, x in enumerate(embs):
+            if i != self.pad_token:
+                scores.append(cosine_similarity(x, vector))
+        # Take ids of the most similar tokens
+        scores = np.asarray(scores)
+        indexes = np.argsort(scores)[::-1][:top_k]
+        top_scores = scores[indexes]
+        return (indexes, top_scores)
+
+ hid_size = 400
+emb_size = 400
+
+
+# With SGD try with an higer learning rate
+lr = 30
+clip = 0.25 # Clip the gradient
+device = 'cuda:0'
+
+vocab_len = len(lang.word2id)
+
+model = LM_LSTM(emb_size, hid_size, vocab_len, pad_index=lang.word2id["<pad>"], tie_weights=True).to(device)
+model.apply(init_weights)
+
+optimizer = torch.optim.ASGD(model.parameters(), lr=args.lr, t0=0, lambd=0., weight_decay=1.2e-6)
+criterion_train = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"])
+criterion_eval = nn.CrossEntropyLoss(ignore_index=lang.word2id["<pad>"], reduction='sum')
+
+n_epochs = 100
+patience = 3
+losses_train = []
+losses_dev = []
+sampled_epochs = []
+best_ppl = math.inf
+best_model = None
+pbar = tqdm(range(1,n_epochs))
+for epoch in pbar:
+    loss = train_loop(train_loader, optimizer, criterion_train, model, clip)
+
+    if epoch % 1 == 0:
+        sampled_epochs.append(epoch)
+        losses_train.append(np.asarray(loss).mean())
+        ppl_dev, loss_dev = eval_loop(dev_loader, criterion_eval, model)
+        losses_dev.append(np.asarray(loss_dev).mean())
+        pbar.set_description("PPL: %f" % ppl_dev)
+        if  ppl_dev < best_ppl: # the lower, the better
+            best_ppl = ppl_dev
+            best_model = copy.deepcopy(model).to('cpu')
+            patience = 3
+        else:
+            patience -= 1
+
+        if patience <= 0: # Early stopping with patience
+            break # Not nice but it keeps the code clean
+
+best_model.to(device)
+final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
+print("Non monotonically Triggered AvSGD: ")
+print()
 print('Test ppl: ', final_ppl)
