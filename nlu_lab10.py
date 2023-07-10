@@ -513,6 +513,9 @@ slot_f1s = np.asarray(slot_f1s)
 intent_acc = np.asarray(intent_acc)
 print('Slot F1', round(slot_f1s.mean(),3), '+-', round(slot_f1s.std(),3))
 print('Intent Acc', round(intent_acc.mean(), 3), '+-', round(slot_f1s.std(), 3))
+'''Slot F1 0.935 +- 0.002
+Intent Acc 0.948 +- 0.002'''
+
 
 """## Add dropout layer"""
 
@@ -603,7 +606,7 @@ for x in tqdm(range(0, runs)):
     losses_dev = []
     sampled_epochs = []
     best_f1 = 0
-    for x in range(1,n_epochs):
+    for x in tqdm(range(1,n_epochs)):
         loss = train_loop(train_loader, optimizer, criterion_slots,
                           criterion_intents, model)
         if x % 5 == 0:
@@ -711,7 +714,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=1e-5)
 criterion = nn.CrossEntropyLoss()
 
 # Addestra il modello
-for epoch in range(num_epochs):
+for epoch in tqdm(range(num_epochs)):
     model.train()
     for batch in train_loader:
         input_ids = batch['input_ids']
