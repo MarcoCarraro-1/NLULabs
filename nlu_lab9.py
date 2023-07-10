@@ -560,6 +560,10 @@ class LM_LSTM(nn.Module):
         return (indexes, top_scores)
 
 
+train_loader = DataLoader(train_dataset, batch_size=64, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]),  shuffle=True)
+dev_loader = DataLoader(dev_dataset, batch_size=128, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
+test_loader = DataLoader(test_dataset, batch_size=128, collate_fn=partial(collate_fn, pad_token=lang.word2id["<pad>"]))
+
 hid_size = 250
 emb_size = 400
 torch.cuda.empty_cache()
