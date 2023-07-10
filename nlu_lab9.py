@@ -637,6 +637,7 @@ final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
 print("Weight Tying: ")
 print()
 print('Test ppl: ', final_ppl)
+'''Test ppl:  178.24676073494174'''
 
 ## Variational dropout
 
