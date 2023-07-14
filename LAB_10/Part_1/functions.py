@@ -22,7 +22,6 @@ import torch.utils.data as data
 from sklearn.utils.class_weight import compute_class_weight
 from utils import *
 from model import *
-import main
 
 
 def load_data(train_fold, test_fold):
@@ -151,10 +150,10 @@ def eval_f1_acc(lang, train_loader, dev_loader, test_loader, call):
     for x in tqdm(range(0, runs)):
         if call==0:
             model = ModelIAS_bidir(hid_size, out_slot, out_int, emb_size,
-                        vocab_len, pad_index=main.PAD_TOKEN).to('cuda:0')
+                        vocab_len, pad_index=0).to('cuda:0')
         else:
             model = ModelIAS_dropout(hid_size, out_slot, out_int, emb_size,
-                        vocab_len, pad_index=main.PAD_TOKEN).to('cuda:0')
+                        vocab_len, pad_index=0).to('cuda:0')
             
         model.apply(init_weights)
 
