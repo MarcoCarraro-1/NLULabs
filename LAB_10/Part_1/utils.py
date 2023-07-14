@@ -208,10 +208,10 @@ def collate_fn(data):
     y_slots, y_lengths = merge(new_item["slots"])
     intent = torch.LongTensor(new_item["intent"])
 
-    src_utt = src_utt.to(device) # We load the Tensor on our seleceted device
-    y_slots = y_slots.to(device)
-    intent = intent.to(device)
-    y_lengths = torch.LongTensor(y_lengths).to(device)
+    src_utt = src_utt.to('cuda:0') # We load the Tensor on our seleceted device
+    y_slots = y_slots.to('cuda:0')
+    intent = intent.to('cuda:0')
+    y_lengths = torch.LongTensor(y_lengths).to('cuda:0')
 
     new_item["utterances"] = src_utt
     new_item["intents"] = intent
