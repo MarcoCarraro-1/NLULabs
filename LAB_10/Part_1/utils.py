@@ -1,5 +1,6 @@
 from functions import *
 from model import *
+from conll import evaluate
 
 '''
 def load_data(path):
