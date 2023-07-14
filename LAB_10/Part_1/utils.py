@@ -18,16 +18,16 @@ def read_file(path, eos_token="<eos>"):
 
 
 class Lang():
-    def __init__(self, words, intents, slots, PAD_TOKEN, cutoff=0):
-        self.word2id = self.w2id(words, PAD_TOKEN, cutoff=cutoff, unk=True)
-        self.slot2id = self.lab2id(slots, PAD_TOKEN)
-        self.intent2id = self.lab2id(intents, PAD_TOKEN, pad=False)
+    def __init__(self, words, intents, slots, cutoff=0):
+        self.word2id = self.w2id(words, cutoff=cutoff, unk=True)
+        self.slot2id = self.lab2id(slots)
+        self.intent2id = self.lab2id(intents, pad=False)
         self.id2word = {v:k for k, v in self.word2id.items()}
         self.id2slot = {v:k for k, v in self.slot2id.items()}
         self.id2intent = {v:k for k, v in self.intent2id.items()}
 
-    def w2id(self, elements, PAD_TOKEN, cutoff=None, unk=True):
-        vocab = {'pad': PAD_TOKEN}
+    def w2id(self, elements, cutoff=None, unk=True):
+        vocab = {'pad': main.PAD_TOKEN}
         if unk:
             vocab['unk'] = len(vocab)
         count = Counter(elements)
@@ -36,10 +36,10 @@ class Lang():
                 vocab[k] = len(vocab)
         return vocab
 
-    def lab2id(self, elements, PAD_TOKEN, pad=True):
+    def lab2id(self, elements, pad=True):
         vocab = {}
         if pad:
-            vocab['pad'] = PAD_TOKEN
+            vocab['pad'] = main.PAD_TOKEN
         for elem in elements:
                 vocab[elem] = len(vocab)
         return vocab
@@ -181,7 +181,7 @@ class IntentsAndSlots (data.Dataset):
             res.append(tmp_seq)
         return res
 
-def collate_fn(data, PAD_TOKEN):
+def collate_fn(data):
     def merge(sequences):
         '''
         merge from batch * sent_len to batch * max_len
@@ -191,7 +191,7 @@ def collate_fn(data, PAD_TOKEN):
         # Pad token is zero in our case
         # So we create a matrix full of PAD_TOKEN (i.e. 0) with the shape
         # batch_size X maximum length of a sequence
-        padded_seqs = torch.LongTensor(len(sequences),max_len).fill_(PAD_TOKEN)
+        padded_seqs = torch.LongTensor(len(sequences),max_len).fill_(main.PAD_TOKEN)
         for i, seq in enumerate(sequences):
             end = lengths[i]
             padded_seqs[i, :end] = seq # We copy each sequence into the matrix
