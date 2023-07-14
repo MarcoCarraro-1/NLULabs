@@ -68,13 +68,6 @@ class LM_LSTM_VarDrop(nn.Module):
     def __init__(self, emb_size, hidden_size, output_size, pad_index=0, out_dropout=0.1,
                  emb_dropout=0.1, n_layers=1, tie_weights=False):
         super(LM_LSTM_VarDrop, self).__init__()
-        '''
-        embedding diventa encoder
-        aggiungo self.decoder
-        aggiungo if tie_weights
-        aggiungo self.embedding
-        aggiungo self.tie_weights
-        '''
                      
         #self.encoder = nn.Embedding(output_size, emb_size)
         #self.decoder = nn.Linear(hidden_size, output_size)
