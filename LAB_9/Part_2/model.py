@@ -58,7 +58,8 @@ class VarDrop(nn.Module):
         if self.mask is None:
             self.mask = x.new_empty(1, x.size(1), requires_grad=False).bernoulli_(1 - self.p)
 
-        print(x.size())
+        print("This x: ", x.size())
+        print("This other: ", self.mask.div_(1 - self.p).size())
         
         return x * self.mask.div_(1 - self.p)
     
