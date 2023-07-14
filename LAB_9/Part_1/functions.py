@@ -99,5 +99,4 @@ def eval_ppl(lang, train_loader, dev_loader, test_loader, call):
         print("Adding dropout layers: ")
     else:
         print("Replace SGD with AdamW: ")
-    print()
-    print('Test ppl: ', final_ppl)
+    print('Test ppl: ', final_ppl, '\n')
