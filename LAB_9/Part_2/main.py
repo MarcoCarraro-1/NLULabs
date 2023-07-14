@@ -8,7 +8,10 @@ if __name__ == "__main__":
                                                                    'dataset/ptb.test.txt')
     
     #ppl_weight_tying = eval_ppl(lang, train_loader, dev_loader, test_loader, 0)
-    
-    ppl_var_dropout = eval_ppl(lang, train_loader, dev_loader, test_loader, 1)
+
+    try:
+        ppl_var_dropout = eval_ppl(lang, train_loader, dev_loader, test_loader, 1)
+    except:
+        print("Error in adding Variational Dropout")
     
     ppl_avsgd = eval_ppl(lang, train_loader, dev_loader, test_loader, 2)
