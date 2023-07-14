@@ -61,7 +61,7 @@ class VarDrop(nn.Module):
         print("This x: ", x.size())
         print("This other: ", self.mask.div_(1 - self.p).size())
         
-        return x * self.mask.div_(1 - self.p)
+        return x * self.mask.div_(1 - self.p).unsqueeze(0)
     
     
 class LM_LSTM_VarDrop(nn.Module):
