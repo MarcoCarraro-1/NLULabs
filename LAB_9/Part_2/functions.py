@@ -103,5 +103,4 @@ def eval_ppl(lang, train_loader, dev_loader, test_loader, call):
         print("Variational Dropout: ")
     else:
         print("Non Monotonically Triggered AvSGD: ")
-    print()
-    print('Test ppl: ', final_ppl)
+    print('Test ppl: ', final_ppl, '\n')
