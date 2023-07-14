@@ -3,8 +3,9 @@ from utils import *
 from model import *
 
 if __name__ == "__main__":
+    PAD_TOKEN = 0
     
-    PAD_TOKEN, train_raw, dev_raw, test_raw, y_train, y_dev, y_test = load_data('dataset/ATIS/train.json', 
+    train_raw, dev_raw, test_raw, y_train, y_dev, y_test = load_data('dataset/ATIS/train.json', 
                                                          'dataset/ATIS/test.json')
     lang = get_lang(train_raw, dev_raw, test_raw, y_train, y_dev, y_test, PAD_TOKEN)
     train_dataset, dev_dataset, test_dataset = get_dataset(train_raw, dev_raw, test_raw, lang)
