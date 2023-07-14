@@ -121,8 +121,8 @@ def collate_fn(data, pad_token):
     source, _ = merge(new_item["source"])
     target, lengths = merge(new_item["target"])
 
-    new_item["source"] = source.to(device)
-    new_item["target"] = target.to(device)
+    new_item["source"] = source.to('cuda:0')
+    new_item["target"] = target.to('cuda:0')
     new_item["number_tokens"] = sum(lengths)
     return new_item
 
