@@ -77,8 +77,8 @@ def get_lang(train_raw, dev_raw, test_raw, y_train, y_dev, y_test):
     print('DEV size:', len(dev_raw))
     print('TEST size:', len(test_raw))
 
-    w2id = {'pad':main.PAD_TOKEN, 'unk': 1}
-    slot2id = {'pad':main.PAD_TOKEN}
+    w2id = {'pad':0, 'unk': 1}
+    slot2id = {'pad':0}
     intent2id = {}
 
     for example in train_raw:
