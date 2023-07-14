@@ -22,13 +22,13 @@ import torch.utils.data as data
 from sklearn.utils.class_weight import compute_class_weight
 from utils import *
 from model import *
+import main
 
 
 def load_data(train_fold, test_fold):
     device = 'cuda:0' # cuda:0 means we are using the GPU with id 0, if you have multiple GPU
     os.environ['CUDA_LAUNCH_BLOCKING'] = "1" # Used to report errors on CUDA side
-    PAD_TOKEN = 0
-
+    
     tmp_train_raw = read_file(train_fold)
     test_raw = read_file(test_fold)
     print('Train samples:', len(tmp_train_raw))
