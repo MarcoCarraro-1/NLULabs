@@ -60,10 +60,10 @@ def load_data(train_fold, test_fold):
 
     y_test = [x['intent'] for x in test_raw]
     
-    return PAD_TOKEN, train_raw, dev_raw, test_raw, y_train, y_dev, y_test
+    return train_raw, dev_raw, test_raw, y_train, y_dev, y_test
 
 
-def get_lang(train_raw, dev_raw, test_raw, y_train, y_dev, y_test, PAD_TOKEN):
+def get_lang(train_raw, dev_raw, test_raw, y_train, y_dev, y_test):
     print('Train:')
     pprint({k:round(v/len(y_train),3)*100 for k, v in sorted(Counter(y_train).items())})
     print('Dev:'),
@@ -76,8 +76,8 @@ def get_lang(train_raw, dev_raw, test_raw, y_train, y_dev, y_test, PAD_TOKEN):
     print('DEV size:', len(dev_raw))
     print('TEST size:', len(test_raw))
 
-    w2id = {'pad':PAD_TOKEN, 'unk': 1}
-    slot2id = {'pad':PAD_TOKEN}
+    w2id = {'pad':main.PAD_TOKEN, 'unk': 1}
+    slot2id = {'pad':main.PAD_TOKEN}
     intent2id = {}
 
     for example in train_raw:
@@ -112,7 +112,7 @@ def get_lang(train_raw, dev_raw, test_raw, y_train, y_dev, y_test, PAD_TOKEN):
     corpus = train_raw + dev_raw + test_raw
     slots = set(sum([line['slots'].split() for line in corpus],[]))
     intents = set([line['intent'] for line in corpus])
-    lang = Lang(words, intents, slots, PAD_TOKEN, cutoff=0)
+    lang = Lang(words, intents, slots, cutoff=0)
     
     return lang
 
@@ -133,7 +133,7 @@ def get_dataload(train_dataset, dev_dataset, test_dataset):
     return train_loader, dev_loader, test_loader
 
 
-def eval_f1_acc(lang, train_loader, dev_loader, test_loader, PAD_TOKEN,call):
+def eval_f1_acc(lang, train_loader, dev_loader, test_loader, call):
     hid_size = 200
     emb_size = 300
 
@@ -149,15 +149,15 @@ def eval_f1_acc(lang, train_loader, dev_loader, test_loader, PAD_TOKEN,call):
     for x in tqdm(range(0, runs)):
         if call==0:
             model = ModelIAS_bidir(hid_size, out_slot, out_int, emb_size,
-                        vocab_len, pad_index=PAD_TOKEN).to('cuda:0')
+                        vocab_len, pad_index=main.PAD_TOKEN).to('cuda:0')
         else:
             model = ModelIAS_dropout(hid_size, out_slot, out_int, emb_size,
-                        vocab_len, pad_index=PAD_TOKEN).to('cuda:0')
+                        vocab_len, pad_index=main.PAD_TOKEN).to('cuda:0')
             
         model.apply(init_weights)
 
         optimizer = optim.Adam(model.parameters(), lr=lr)
-        criterion_slots = nn.CrossEntropyLoss(ignore_index=PAD_TOKEN)
+        criterion_slots = nn.CrossEntropyLoss(ignore_index=main.PAD_TOKEN)
         criterion_intents = nn.CrossEntropyLoss()
 
         n_epochs = 200
