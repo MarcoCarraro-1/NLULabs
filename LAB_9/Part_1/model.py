@@ -11,6 +11,7 @@ class LM_LSTM(nn.Module):
         self.lstm = nn.LSTM(emb_size, hidden_size, n_layers, bidirectional=False)
         self.call = call
         if  call==1:
+            self.dropout_emb = nn.Dropout(emb_dropout)
             self.dropout_out = nn.Dropout(out_dropout)        
         self.pad_token = pad_index
         # Linear layer to project the hidden layer to our output space
