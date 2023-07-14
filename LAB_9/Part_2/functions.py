@@ -49,7 +49,7 @@ def eval_ppl(lang, train_loader, dev_loader, test_loader, call):
     if call==0 or call==2:
         model = LM_LSTM(emb_size, hid_size, vocab_len, pad_index=lang.word2id["<pad>"], tie_weights=True).to('cuda:0')
     elif call==1:
-        model = LM_LSTM_VarDrop(emb_size, hid_size, vocab_len, pad_index=lang.word2id["<pad>"], tie_weights=True).to('cuda:0')
+        model = LM_LSTM_VarDrop(emb_size, hid_size, vocab_len, pad_index=lang.word2id["<pad>"]).to('cuda:0')
         
     model.apply(init_weights)
     
