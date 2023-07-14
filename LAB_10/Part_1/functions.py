@@ -64,6 +64,7 @@ def load_data(train_fold, test_fold):
 
 
 def get_lang(train_raw, dev_raw, test_raw, y_train, y_dev, y_test):
+    '''
     print('Train:')
     pprint({k:round(v/len(y_train),3)*100 for k, v in sorted(Counter(y_train).items())})
     print('Dev:'),
@@ -71,6 +72,7 @@ def get_lang(train_raw, dev_raw, test_raw, y_train, y_dev, y_test):
     print('Test:')
     pprint({k:round(v/len(y_test),3)*100 for k, v in sorted(Counter(y_test).items())})
     print('='*89)
+    '''
     # Dataset size
     print('TRAIN size:', len(train_raw))
     print('DEV size:', len(dev_raw))
