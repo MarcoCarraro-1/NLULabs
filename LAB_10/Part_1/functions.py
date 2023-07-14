@@ -158,7 +158,7 @@ def eval_f1_acc(lang, train_loader, dev_loader, test_loader, call):
         model.apply(init_weights)
 
         optimizer = optim.Adam(model.parameters(), lr=lr)
-        criterion_slots = nn.CrossEntropyLoss(ignore_index=main.PAD_TOKEN)
+        criterion_slots = nn.CrossEntropyLoss(ignore_index=0)
         criterion_intents = nn.CrossEntropyLoss()
 
         n_epochs = 200
