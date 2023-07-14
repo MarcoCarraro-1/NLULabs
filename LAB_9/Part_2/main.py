@@ -7,7 +7,7 @@ if __name__ == "__main__":
                                                                    'dataset/ptb.valid.txt',
                                                                    'dataset/ptb.test.txt')
     
-    ppl_weight_tying = eval_ppl(lang, train_loader, dev_loader, test_loader, 0)
+    #ppl_weight_tying = eval_ppl(lang, train_loader, dev_loader, test_loader, 0)
     
     ppl_var_dropout = eval_ppl(lang, train_loader, dev_loader, test_loader, 1)
     
