@@ -73,8 +73,8 @@ class LM_LSTM_VarDrop(nn.Module):
         aggiungo self.tie_weights
         '''
                      
-        self.encoder = nn.Embedding(output_size, emb_size)
-        self.decoder = nn.Linear(hidden_size, output_size)
+        #self.encoder = nn.Embedding(output_size, emb_size)
+        #self.decoder = nn.Linear(hidden_size, output_size)
         if tie_weights:
             #    raise ValueError('When using the tied flag, nhid must be equal to emsize')
             self.decoder.weight = self.encoder.weight
@@ -85,7 +85,7 @@ class LM_LSTM_VarDrop(nn.Module):
         self.out_dropout = VarDrop(out_dropout)
         self.pad_token = pad_index
         self.output = nn.Linear(hidden_size, output_size)
-        self.tie_weights = tie_weights
+        #self.tie_weights = tie_weights
         self.output.weight = self.embedding.weight  # Weight tying
         
     def forward(self, input_sequence):
