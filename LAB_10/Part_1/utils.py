@@ -27,7 +27,7 @@ class Lang():
         self.id2intent = {v:k for k, v in self.intent2id.items()}
 
     def w2id(self, elements, cutoff=None, unk=True):
-        vocab = {'pad': main.PAD_TOKEN}
+        vocab = {'pad': 0}
         if unk:
             vocab['unk'] = len(vocab)
         count = Counter(elements)
@@ -39,7 +39,7 @@ class Lang():
     def lab2id(self, elements, pad=True):
         vocab = {}
         if pad:
-            vocab['pad'] = main.PAD_TOKEN
+            vocab['pad'] = 0
         for elem in elements:
                 vocab[elem] = len(vocab)
         return vocab
@@ -191,7 +191,7 @@ def collate_fn(data):
         # Pad token is zero in our case
         # So we create a matrix full of PAD_TOKEN (i.e. 0) with the shape
         # batch_size X maximum length of a sequence
-        padded_seqs = torch.LongTensor(len(sequences),max_len).fill_(main.PAD_TOKEN)
+        padded_seqs = torch.LongTensor(len(sequences),max_len).fill_(0)
         for i, seq in enumerate(sequences):
             end = lengths[i]
             padded_seqs[i, :end] = seq # We copy each sequence into the matrix
