@@ -40,7 +40,7 @@ class ModelIAS_bidir(nn.Module):
 class ModelIAS_dropout(nn.Module):
 
     def __init__(self, hid_size, out_slot, out_int, emb_size, vocab_len, n_layer=1, pad_index=0):
-        super(ModelIAS, self).__init__()
+        super(ModelIAS_dropout, self).__init__()
 
         self.embedding = nn.Embedding(vocab_len, emb_size, padding_idx=pad_index)
 
