@@ -91,7 +91,7 @@ def eval_ppl(lang, train_loader, dev_loader, test_loader, call):
             if patience <= 0:
                 break 
 
-    best_model.to(device)
+    best_model.to('cuda:0')
     final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
     if call == 0:
         print("Replace RNN and Changing Learning Rate: ")
