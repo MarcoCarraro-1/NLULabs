@@ -167,7 +167,7 @@ def get_movie_x_y(movie_train, polarity_train, movie_test, polarity_test):
 
 def eval_acc3(x_movie, y_movie):
     vectorizer = CountVectorizer()
-    model = MLPClassifier(hidden_layer_sizes=(100, 50), activation='relu', solver='adam').
+    model = MLPClassifier(hidden_layer_sizes=(100, 50), activation='relu', solver='adam')
     model.to('cuda:0')
     skf = StratifiedKFold(n_splits=10, random_state=42, shuffle=True)
 
