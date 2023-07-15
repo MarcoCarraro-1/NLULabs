@@ -94,12 +94,12 @@ def eval_ppl(lang, train_loader, dev_loader, test_loader, call):
     best_model.to('cuda:0')
     final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
     if call == 0:
-        torch.save(best_model.state_dict(), 'replace_rnn_lstm.bin')
+        torch.save(best_model.state_dict(), 'bin/replace_rnn_lstm.bin')
         print("Replace RNN and Changing Learning Rate: ")
     elif call == 1:
-        torch.save(best_model.state_dict(), 'dropout_lstm.bin')
+        torch.save(best_model.state_dict(), 'bin/dropout_lstm.bin')
         print("Adding dropout layers: ")
     else:
-        torch.save(best_model.state_dict(), 'replace_sgd_adamw_lstm.bin')
+        torch.save(best_model.state_dict(), 'bin/replace_sgd_adamw_lstm.bin')
         print("Replace SGD with AdamW: ")
     print('Test ppl: ', final_ppl, '\n')
