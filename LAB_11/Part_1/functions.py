@@ -52,6 +52,8 @@ def eval_acc2(X_train, X_test, y_train, y_test):
     skf = StratifiedKFold(n_splits=10, random_state=42, shuffle=True)
 
     accuracies = []
+    best_accuracy = 0
+    best_model = None
 
     for train_index, test_index in tqdm(skf.split(x, y)):
         x_train_fold, x_test_fold = [x[i] for i in train_index], [x[i] for i in test_index]
@@ -66,8 +68,13 @@ def eval_acc2(X_train, X_test, y_train, y_test):
         accuracy = accuracy_score(y_test_fold, predictions)
         accuracies.append(accuracy)
 
-    mean_accuracy = sum(accuracies) / len(accuracies)
+        if accuracy > best_accuracy:
+            best_accuracy = accuracy
+            best_model = clf
 
+    mean_accuracy = sum(accuracies) / len(accuracies)
+    torch.save(best_model.state_dict(), 'subjectivity_all_sents.bin')
+    
     print("[SUBJECTIVITY] Mean Accuracy - All sentences: ", mean_accuracy)
     
     return mean_accuracy
@@ -171,6 +178,8 @@ def eval_acc3(x_movie, y_movie):
     skf = StratifiedKFold(n_splits=10, random_state=42, shuffle=True)
 
     accuracies = []
+    best_accuracy = 0
+    best_model = None
 
     for train_index, test_index in tqdm(skf.split(x_movie, y_movie), total=skf.get_n_splits()):
         x_train_fold, x_test_fold = [x_movie[i] for i in train_index], [x_movie[i] for i in test_index]
@@ -185,7 +194,13 @@ def eval_acc3(x_movie, y_movie):
         accuracy = accuracy_score(y_test_fold, predictions)
         accuracies.append(accuracy)
 
+        if accuracy > best_accuracy:
+            best_accuracy = accuracy
+            best_model = clf
+
     mean_accuracy = sum(accuracies) / len(accuracies)
+    torch.save(best_model.state_dict(), 'polarity_all_sents.bin')
+    
     print("[POLARITY] Mean Accuracy - All sentences: ", mean_accuracy)
 
     return mean_accuracy, model, skf
@@ -245,6 +260,8 @@ def remove_obj_sents(movie_train, movie_test, subj_vectorizer,
 
 def eval_acc4(skf_polarity, movie_no_obj, polarity_no_obj, model_polarity):
     accuracies = []
+    best_accuracy = 0
+    best_model = None
     polarity_vectorizer = CountVectorizer()
 
     for train_index, test_index in tqdm(skf_polarity.split(movie_no_obj, polarity_no_obj), total=skf_polarity.get_n_splits()):
@@ -260,7 +277,13 @@ def eval_acc4(skf_polarity, movie_no_obj, polarity_no_obj, model_polarity):
         accuracy = accuracy_score(y_test_fold, predictions)
         accuracies.append(accuracy)
 
+        if accuracy > best_accuracy:
+            best_accuracy = accuracy
+            best_model = clf
+
     mean_accuracy = sum(accuracies) / len(accuracies)
+    torch.save(best_model.state_dict(), 'polarity_without_objective.bin')
+    
     print("[POLARITY] Mean Accuracy - Without objective sentences: ", mean_accuracy)
     
     return mean_accuracy
