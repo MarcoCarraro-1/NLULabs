@@ -181,9 +181,9 @@ def eval_f1_acc(lang, train_loader, dev_loader, test_loader, call):
                 if f1 > best_f1:
                     best_f1 = f1
                     if call == 0:
-                        torch.save(model.state_dict(), 'bidirectional_IAS.bin')
+                        torch.save(model.state_dict(), 'bin/bidirectional_IAS.bin')
                     else:
-                        torch.save(model.state_dict(), 'dropout_IAS.bin')
+                        torch.save(model.state_dict(), 'bin/dropout_IAS.bin')
                 else:
                     patience -= 1
                 if patience <= 0: # Early stoping with patient
