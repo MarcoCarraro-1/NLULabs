@@ -98,12 +98,12 @@ def eval_ppl(lang, train_loader, dev_loader, test_loader, call):
     best_model.to('cuda:0')
     final_ppl,  _ = eval_loop(test_loader, criterion_eval, best_model)
     if call == 0:
-        torch.save(best_model.state_dict(), 'weight_tying_lstm.bin')
+        torch.save(best_model.state_dict(), 'bin/weight_tying_lstm.bin')
         print("Weight Tying: ")
     elif call == 1:
-        torch.save(best_model.state_dict(), 'variational_dropout_lstm.bin')
+        torch.save(best_model.state_dict(), 'bin/variational_dropout_lstm.bin')
         print("Variational Dropout: ")
     else:
-        torch.save(best_model.state_dict(), 'triggered_avsgd.bin')
+        torch.save(best_model.state_dict(), 'bin/triggered_avsgd.bin')
         print("Non Monotonically Triggered AvSGD: ")
     print('Test ppl: ', final_ppl, '\n')
