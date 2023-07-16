@@ -99,9 +99,11 @@ def get_prep_movie(movie_sentences):
     for sent in tqdm(movie_sentences):
         preprocessed_sentence = preprocess_text(' '.join(sent))
         movie_prep.append(preprocessed_sentence)
-
+    
+    '''
     print("Length movie dataset: ", len(movie_prep))
     print("Example: ", movie_prep[0])
+    '''
     
     return movie_prep
 
@@ -223,8 +225,8 @@ def remove_obj_sents(movie_train, movie_test, subj_vectorizer,
     for sent, label in zip(movie_all, movie_subj_pred):
         if label == 'subj':
             movie_no_obj.append(sent)
-
-    print("Length of movie subjective sentences: ", len(movie_no_obj))
+    
+    #print("Length of movie subjective sentences: ", len(movie_no_obj))
     movie_temp = []
 
     for sent in movie_no_obj:
@@ -244,10 +246,11 @@ def remove_obj_sents(movie_train, movie_test, subj_vectorizer,
         else:
             pol = 'Neg'
         polarity_no_obj.append(pol)
-
+    '''
     print("Length of movie subjective polarity: ", len(polarity_no_obj))
     counts = pd.Series(polarity_no_obj).value_counts()
     print(counts)
+    '''
     movie_temp = []
 
     for sent in movie_no_obj:
