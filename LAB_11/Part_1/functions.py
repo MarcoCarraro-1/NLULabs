@@ -29,7 +29,7 @@ from tqdm import tqdm
 from nltk.corpus import movie_reviews
 nltk.download('movie_reviews')
 nltk.download('vader_lexicon')
-
+import joblib
 
 
 def eval_acc1(X_train_vectorized, X_test_vectorized, y_train, y_test):
@@ -73,7 +73,7 @@ def eval_acc2(X_train, X_test, y_train, y_test):
             best_model = clf
 
     mean_accuracy = sum(accuracies) / len(accuracies)
-    torch.save(best_model.state_dict(), 'bin/subjectivity_all_sents.bin')
+    joblib.dump(best_model, 'bin/subjectivity_all_sents.bin')
     
     print("[SUBJECTIVITY] Mean Accuracy - All sentences: ", mean_accuracy)
     
@@ -199,7 +199,7 @@ def eval_acc3(x_movie, y_movie):
             best_model = model
 
     mean_accuracy = sum(accuracies) / len(accuracies)
-    torch.save(best_model.state_dict(), 'bin/polarity_all_sents.bin')
+    joblib.dump(best_model, 'bin/polarity_all_sents.bin')
     
     print("[POLARITY] Mean Accuracy - All sentences: ", mean_accuracy)
 
@@ -282,7 +282,7 @@ def eval_acc4(skf_polarity, movie_no_obj, polarity_no_obj, model_polarity):
             best_model = model_polarity
 
     mean_accuracy = sum(accuracies) / len(accuracies)
-    torch.save(best_model.state_dict(), 'bin/polarity_without_objective.bin')
+    joblib.dump(best_model, 'bin/polarity_without_objective.bin')
     
     print("[POLARITY] Mean Accuracy - Without objective sentences: ", mean_accuracy)
     
