@@ -10,7 +10,7 @@ if __name__ == "__main__":
     X_train_vectorized, X_test_vectorized, subj_vectorizer = vectorize(X_train, X_test)
     
     acc_no_kfold, model = eval_acc1(X_train_vectorized, X_test_vectorized, y_train, y_test)
-    #acc_all_sents = eval_acc2(X_train, X_test, y_train, y_test)
+    acc_all_sents = eval_acc2(X_train, X_test, y_train, y_test)
     
     movie_sentences, polarity_all = get_movie_data()
     
