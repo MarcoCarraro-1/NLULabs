@@ -18,7 +18,7 @@ def get_data(subj, obj):
     obj_docs = [(sent, obj) for sent in subjectivity.sents(categories='obj')[:n_instances]]
 
     len(subj_docs), len(obj_docs)
-    print("Sentence of Subjectivity dataset: ", subj_docs[0])
+    #print("Sentence of Subjectivity dataset: ", subj_docs[0])
     
     return subj_docs, obj_docs
 
@@ -47,12 +47,12 @@ def get_prep_sents(subj_docs, obj_docs):
         obj_prep.append([preprocessed_sentence, label])
 
     all_prep = subj_prep + obj_prep
-
+    
     print("Subjective sentences: ", len(subj_prep))
     print("Objective sentences: ", len(obj_prep))
     print("All sentences: ", len(all_prep))
-    print(subj_prep[0])
-    print(subj_prep[1])
+    #print(subj_prep[0])
+    #print(subj_prep[1])
     
     return subj_prep, obj_prep, all_prep
 
