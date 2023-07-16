@@ -66,6 +66,9 @@ class ModelIAS_dropout(nn.Module):
         # Get the last hidden state
         last_hidden = torch.cat((last_hidden[-2,:,:], last_hidden[-1,:,:]), dim=1)
         # Compute slot logits
+        # Apply dropout to the output of LSTM encoder
+        last_hidden = self.dropout(last_hidden)
+        
         slots = self.slot_out(utt_encoded)
         # Compute intent logits
         intent = self.intent_out(last_hidden)
