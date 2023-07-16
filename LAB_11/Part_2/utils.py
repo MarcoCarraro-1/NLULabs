@@ -110,6 +110,6 @@ def extract_term_model(tokenized_train_data, aspect_labels):
     model = MLPClassifier(hidden_layer_sizes=(100, 50), activation='relu', solver='adam')
     model.fit(train_tokenized_array, aspect_labels_bin)
 
-    joblib.dump(best_model, 'bin/term_extraction_model.bin')
+    joblib.dump(model, 'bin/term_extraction_model.bin')
     
     return train_tokenized_array, aspect_labels_bin, model, vectorizer, mlb
